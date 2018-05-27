@@ -3,4 +3,5 @@ imutils
 sklearn
 tensorflow
 keras
+pandas
 opencv-python
