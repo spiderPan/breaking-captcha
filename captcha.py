@@ -73,9 +73,20 @@ class Captcha:
 
         if len(letter_image_regions) != 4:
             print('image is not containing four letters')
+            self.print_captcha_img(letter_image_regions, image)
+
             return [], image
 
         return sorted(letter_image_regions, key=lambda x: x[0]), image
+
+    def print_captcha_img(self, letter_image_regions, image):
+        output = cv2.merge([image] * 3)
+        for letter_bounding_box in letter_image_regions:
+            x, y, w, h = letter_bounding_box
+            cv2.rectangle(output, (x - 2, y - 2), (x + w + 4, y + h + 4), (0, 255, 0), 1)
+            # cv2.putText(output, letter, (x - 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 2)
+        cv2.imshow("Output", output)
+        cv2.waitKey()
 
     def rename_captcha_imgs(self):
         with open(self.captcha_result_file) as r:
