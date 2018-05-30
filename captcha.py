@@ -22,8 +22,7 @@ class Captcha:
         padW = int((width - image.shape[1]) / 2.0)
         padH = int((height - image.shape[0]) / 2.0)
 
-        image = cv2.copyMakeBorder(image, padH, padH, padW, padW,
-                                   cv2.BORDER_REPLICATE)
+        image = cv2.copyMakeBorder(image, padH, padH, padW, padW, cv2.BORDER_REPLICATE)
         image = cv2.resize(image, (width, height))
 
         return image
