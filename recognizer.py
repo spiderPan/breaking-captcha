@@ -9,7 +9,6 @@ from keras.models import Sequential
 from keras.models import load_model
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.core import Flatten, Dense
-import imutils
 from captcha import Captcha
 
 
@@ -85,7 +84,6 @@ class Recognizer:
         model = load_model(self.model_filename)
         image = cv2.imread(image_file)
         letter_image_regions, image = self.captcha.split_captcha_into_letters(image)
-        # output = cv2.merge([image] * 3)
         predictions = []
 
         for letter_bounding_box in letter_image_regions:
@@ -109,15 +107,8 @@ class Recognizer:
             letter = lb.inverse_transform(prediction)[0]
             predictions.append(letter)
 
-            # draw the prediction on the output image
-            # cv2.rectangle(output, (x - 2, y - 2), (x + w + 4, y + h + 4), (0, 255, 0), 1)
-            # cv2.putText(output, letter, (x - 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 2)
-
         # Print the captcha's text
         captcha_text = "".join(predictions)
         print("CAPTCHA text is: {}".format(captcha_text))
 
-        # Show the annotated image
-        # cv2.imshow("Output", output)
-        # cv2.waitKey()
         return captcha_text
