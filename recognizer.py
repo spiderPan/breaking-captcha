@@ -21,7 +21,6 @@ class Recognizer:
         self.captcha = Captcha()
 
     def load_captcha_folder(self, folder):
-
         for image_file in paths.list_images(folder):
             image = cv2.imread(image_file)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -33,6 +32,24 @@ class Recognizer:
 
         self.data = np.array(self.data, dtype="float") / 255.0
         self.labels = np.array(self.labels)
+
+    def run_in_test_folder(self, folder):
+        errors = []
+        total = 0
+        for image_file in paths.list_images(folder):
+            total += 1
+            predict_txt = self.predict_model(image_file)
+            file_name = os.path.basename(image_file)
+            label, file_type = os.path.splitext(file_name)
+            if predict_txt != label:
+                print ('FALSE: Image is {}, Recognizer reads {}'.format(label, predict_txt))
+                errors.append(label)
+            else:
+                print ('TRUE: Image is {}, Recognizer reads {}'.format(label, predict_txt))
+
+        print('Run testing in {}, and got {} errors, accuracy is {}'.format(total, len(errors), len(errors) / total))
+        with open('errors.txt', 'a') as error_file:
+            pickle.dump(errors, error_file)
 
     def train_model(self):
         # Split the training data into separate train and test sets
