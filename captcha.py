@@ -39,6 +39,9 @@ class Captcha:
             image = cv2.imread(captcha_img_file)
             letter_image_regions, image = self.split_captcha_into_letters(image)
 
+            if len(letter_image_regions) != 4:
+                continue
+
             for letter_bounding_box, letter_text in zip(letter_image_regions, captcha_correct_text):
                 x, y, w, h = letter_bounding_box
                 letter_image = image[y - 2:y + h + 2, x - 2:x + w + 2]
@@ -53,7 +56,7 @@ class Captcha:
 
                 counts[letter_text] = count + 1
 
-    def split_captcha_into_letters(self, image):
+    def split_captcha_into_letters(self, image, print_error=False):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image = cv2.copyMakeBorder(image, 8, 8, 8, 8, cv2.BORDER_REPLICATE)
         thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
@@ -72,7 +75,8 @@ class Captcha:
 
         if len(letter_image_regions) != 4:
             print('image is not containing four letters')
-            self.print_captcha_img(letter_image_regions, image)
+            if print_error:
+                self.print_captcha_img(letter_image_regions, image)
 
             return [], image
 
