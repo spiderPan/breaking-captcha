@@ -11,7 +11,6 @@ class Captcha:
         self.captcha_result_file = self.captcha_image_folder + '/results.txt'
 
     def resize_to_fit(self, image, width, height):
-
         (h, w) = image.shape[:2]
 
         if w > h:
